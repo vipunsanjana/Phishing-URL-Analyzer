@@ -9,6 +9,6 @@ async def worker(connection, queue: asyncio.Queue):
         try:
             await process_url(connection, url)
         except Exception as e:
-            constants.LOGGER.error(f"Error processing URL {url}: {e}")
+            constants.LOGGER.error(f"Error processing URL {url}: {e}",exc_info=True)
         queue.task_done()
         
