@@ -24,11 +24,9 @@ async def process_url(connection, url: str, retries: int = 1):
         if not result.get("Phishing"):
             save_only_phishing(connection, result, url)
             add_data_to_sheet(url, result)
-            await asyncio.sleep(1)
     except Exception as e:
         if retries > 0:
             constants.LOGGER.warning(f"Retrying URL {url} due to error: {e}")
-            await asyncio.sleep(1) 
             await process_url(connection, url, retries - 1)  
         else:
             constants.LOGGER.error(f"Error processing URL {url}: {e}", exc_info=True)

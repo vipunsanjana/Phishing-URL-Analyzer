@@ -43,10 +43,6 @@ REPORT_TEMPLATE = """
 # Path to save the screenshot
 screenshot_path = 'static/screenshot-' + str(time.time()) + '.png'
 
-# GPT-4o model parameters
-chunk_size=1000
-overlap=200
-
 # Maximum token limit for OpenAI API
 max_token_limit = 127000 
 
