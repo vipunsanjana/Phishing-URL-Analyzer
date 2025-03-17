@@ -1,0 +1,15 @@
+mysql-connector-python
+pydantic
+playwright
+beautifulsoup4
+Pillow
+requests
+firebase-admin
+python-dotenv
+openai
+PyYAML
+langchain
+langchain-community
+langchain-openai
+sqlalchemy 
+gspread
