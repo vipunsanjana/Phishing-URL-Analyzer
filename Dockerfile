@@ -1,31 +1,49 @@
-# Use the official Playwright image with Python 3.9
+# Description: Dockerfile for building the application with Playwright
+
+# Use the official Playwright image 
 FROM mcr.microsoft.com/playwright/python 
 
 # Set the working directory inside the container
 WORKDIR /app
 
-# Copy the requirements file into the container
+# Install system dependencies required for building Python packages
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    wget \
+    unzip \
+    curl \
+    build-essential \
+    gcc \
+    g++ \
+    libffi-dev \
+    libssl-dev \
+    python3-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy the requirements file first for better caching
 COPY requirements.txt .
 
-# Install dependencies and upgrade pip and setuptools
-RUN pip install --no-cache-dir -r requirements.txt \
-    && pip install --no-cache-dir --upgrade pip setuptools wheel
+# Upgrade pip and setuptools (important for building wheels)
+RUN pip install --no-cache-dir --upgrade pip setuptools wheel
+
+# Install Python dependencies
+RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy the entire application code
 COPY . .
 
 # Create a new user with UID 10016 for security
-RUN addgroup --gid 10016 choreo && \
-    adduser --disabled-password --no-create-home --uid 10016 --ingroup choreo choreouser
-
-# Change the ownership of the application code to the unprivileged user
-RUN chown -R 10016:10016 /app
+RUN addgroup --gid 10015 choreo && \
+    adduser --disabled-password --no-create-home --uid 10015 --ingroup choreo choreouser && \
+    chown -R 10015:10015 .
 
 # Switch to the unprivileged user
-USER choreouser
+USER 10015
 
-# Expose port 8000 (optional, if needed for debugging)
+# Ensure the correct user is in effect
+RUN whoami && id
+
+# Expose the FastAPI port (8000)
 EXPOSE 8000
 
-# Set the default command to run the script normally (modify script name as needed)
-CMD ["python", "-m", "app.app.main"]
+# Run the application
+CMD ["python", "-m", "app.main"]
