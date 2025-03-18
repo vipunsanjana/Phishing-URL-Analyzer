@@ -44,4 +44,4 @@ RUN whoami && id
 EXPOSE 8000
 
 # Run the application
-CMD ["python", "-m", "main"]
+CMD ["python", "-m", "app.main"]
