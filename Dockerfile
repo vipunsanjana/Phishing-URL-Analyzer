@@ -1,10 +1,8 @@
-# Description: Dockerfile for building the application with Playwright
-
-# Use the official Playwright image 
-FROM mcr.microsoft.com/playwright/python 
+# Use the official Playwright image
+FROM mcr.microsoft.com/playwright/python
 
 # Set the working directory inside the container
-WORKDIR /app
+WORKDIR /workspace/app
 
 # Install system dependencies required for building Python packages
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -29,7 +27,7 @@ RUN pip install --no-cache-dir --upgrade pip setuptools wheel
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy application code
-COPY ./app /app
+COPY . .
 
 # Create a new user with UID 10016 for security
 RUN addgroup --gid 10015 choreo && \
@@ -46,4 +44,4 @@ RUN whoami && id
 EXPOSE 8000
 
 # Run the application
-CMD ["python", "-m", "app.main"]
+CMD ["python", "-m", "main"]
