@@ -1,26 +1,27 @@
-import aiomysql
+import mysql.connector
+from mysql.connector import Error
 from app.utils import constants, config
 
-async def create_mysql_connection():
+def create_mysql_connection():
     """
-    Establish and return an asynchronous connection to the MySQL database.
+    Establish and return a synchronous connection to the MySQL database.
 
     Returns:
-        aiomysql.Connection: Database connection object.
+        mysql.connector.connection.MySQLConnection: Database connection object.
     Raises:
-        DatabaseConnectionError: If connection fails.
+        Exception: If connection fails.
     """
     try:
-        connection = await aiomysql.connect(
+        connection = mysql.connector.connect(
             host=config.MYSQL_DB_HOST,
             user=config.MYSQL_DB_USER,
             password=config.MYSQL_DB_PASSWORD,
-            db=config.MYSQL_DB_NAME,
+            database=config.MYSQL_DB_NAME,
             port=int(config.MYSQL_DB_PORT),
         )
-        if connection:
+        if connection.is_connected():
             constants.LOGGER.info("Connected to MySQL database")
             return connection
-    except Exception as e:
+    except Error as e:
         constants.LOGGER.error(f"Error connecting to MySQL database: {e}")
         raise Exception(f"Error connecting to MySQL database: {e}")
