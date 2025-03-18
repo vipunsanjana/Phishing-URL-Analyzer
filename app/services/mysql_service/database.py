@@ -123,15 +123,15 @@ def get_report_from_phishing_sites(connection) -> Dict[str, Any]:
     for record in records:
         counters["total_sites_scanned"] += 1
 
-        political_content = str(record[2]).strip().lower()  
-        website_related_to_sri_lanka = str(record[3]).strip().lower()  
-        phishing_status = str(record[4]).strip().lower()  
+        political_content = str(record[2]).strip().lower()  # Correcting the index for 'is_political_content'
+        website_related_to_sri_lanka = str(record[1]).strip().lower()  # Correcting the index for 'is_related_lk'
+        phishing_status = str(record[5]).strip().lower()
 
-        counters["not_political"] += 1 if political_content != "yes" else 0
-        counters["political"] += 1 if political_content == "yes" else 0
-        counters["not_related_to_lk"] += 1 if website_related_to_sri_lanka == "no" else 0
-        counters["related_to_lk"] += 1 if website_related_to_sri_lanka != "no" else 0
-        counters["not_phishing"] += 1 if phishing_status != "0" else 0
-        counters["phishing"] += 1 if phishing_status == "0" else 0
+        counters["not_political"] += 1 if political_content != "1" else 0
+        counters["political"] += 1 if political_content == "1" else 0
+        counters["not_related_to_lk"] += 1 if website_related_to_sri_lanka == "1" else 0
+        counters["related_to_lk"] += 1 if website_related_to_sri_lanka != "1" else 0
+        counters["not_phishing"] += 1 if phishing_status == "0" else 0
+        counters["phishing"] += 1 if phishing_status != "0" else 0
 
     return counters
