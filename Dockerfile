@@ -28,8 +28,8 @@ RUN pip install --no-cache-dir --upgrade pip setuptools wheel
 # Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the entire application code
-COPY . .
+# Copy application code
+COPY ./app /app
 
 # Create a new user with UID 10016 for security
 RUN addgroup --gid 10015 choreo && \
