@@ -29,7 +29,8 @@ async def main():
         connection = await create_mysql_connection()
         queue = asyncio.Queue()
 
-        urls = await get_all_urls(connection)
+        # Retrieve URLs asynchronously
+        urls = await asyncio.to_thread(get_all_urls, connection)
         for url in urls:
             await queue.put(url)
 
@@ -39,21 +40,21 @@ async def main():
 
         await asyncio.gather(*tasks)  
 
-        # Fetch and send phishing report
-        report = await get_report_from_phishing_sites(connection)
+        # Fetch and send phishing report asynchronously
+        report = await asyncio.to_thread(get_report_from_phishing_sites, connection)
         send_webhook_message(report)
 
-        # Delete all records from the database
-        await delete_all_records(connection)
+        # Delete all records from the database asynchronously
+        await asyncio.to_thread(delete_all_records, connection)
 
         constants.LOGGER.info("Process completed successfully.")
     except Exception as e:
         constants.LOGGER.critical(f"Critical error in main function: {e}", exc_info=True)
-        send_error_message("Main Function", str(e))
+        await send_error_message("Main Function", str(e))
         raise Exception(f"Critical error in main function: {e}")
     finally:
         if connection and connection.is_connected():
-            connection.close()
+            await connection.close()
             constants.LOGGER.debug("Database connection closed.")
 
 if __name__ == "__main__":

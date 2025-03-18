@@ -14,3 +14,4 @@ langchain-openai
 sqlalchemy 
 gspread
 uvloop
+aiomysql
