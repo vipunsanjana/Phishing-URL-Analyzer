@@ -29,12 +29,15 @@ MYSQL_DB_PASSWORD = os.getenv("MYSQL_DB_PASSWORD")
 MYSQL_DB_NAME = os.getenv("MYSQL_DB_NAME")
 MYSQL_DB_PORT = os.getenv("MYSQL_DB_PORT")
 
-# Use environment variables securely
+private_key = os.getenv("GOOGLE_SHEETS_PRIVATE_KEY")
+if private_key:
+    private_key = private_key.replace(r"\n", "\n")  # This will replace the literal '\n' with actual newlines
+
 google_creds = {
     "type": os.getenv("GOOGLE_SHEETS_TYPE"),
     "project_id": os.getenv("GOOGLE_SHEETS_PROJECT_ID"),
     "private_key_id": os.getenv("GOOGLE_SHEETS_PRIVATE_KEY_ID"),
-    "private_key": os.getenv("GOOGLE_SHEETS_PRIVATE_KEY").replace("\\n", "\n"),
+    "private_key": private_key,  # Use the cleaned up private_key here
     "client_email": os.getenv("GOOGLE_SHEETS_CLIENT_EMAIL"),
     "client_id": os.getenv("GOOGLE_SHEETS_CLIENT_ID"),
     "auth_uri": os.getenv("GOOGLE_SHEETS_AUTH_URI"),
@@ -43,6 +46,7 @@ google_creds = {
     "client_x509_cert_url": os.getenv("GOOGLE_SHEETS_CLIENT_CERT_URL"),
     "universe_domain": os.getenv("GOOGLE_SHEETS_UNIVERSE_DOMAIN"),
 }
+
 
 # Google Sheet ID
 SHEET_ID = os.getenv("SHEET_ID")
