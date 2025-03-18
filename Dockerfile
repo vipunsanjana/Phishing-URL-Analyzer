@@ -2,7 +2,7 @@
 FROM mcr.microsoft.com/playwright/python
 
 # Set the working directory inside the container
-WORKDIR /workspace/app
+WORKDIR /workspace
 
 # Install system dependencies required for building Python packages
 RUN apt-get update && apt-get install -y --no-install-recommends \
