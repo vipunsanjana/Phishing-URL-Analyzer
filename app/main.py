@@ -50,7 +50,7 @@ async def main():
         constants.LOGGER.info("Process completed successfully.")
     except Exception as e:
         constants.LOGGER.critical(f"Critical error in main function: {e}", exc_info=True)
-        await send_error_message("Main Function", str(e))
+        send_error_message("Main Function", str(e))
         raise Exception(f"Critical error in main function: {e}")
     finally:
         if connection and connection.is_connected():
