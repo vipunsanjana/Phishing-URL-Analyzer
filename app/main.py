@@ -30,7 +30,7 @@ async def main():
         queue = asyncio.Queue()
 
         # Retrieve URLs asynchronously
-        urls = await asyncio.to_thread(get_all_urls, connection)
+        urls = asyncio.to_thread(get_all_urls, connection)
         for url in urls:
             await queue.put(url)
 
