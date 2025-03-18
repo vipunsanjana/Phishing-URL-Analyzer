@@ -28,4 +28,4 @@ USER choreouser
 EXPOSE 8000
 
 # Set the default command to run the script normally (modify script name as needed)
-CMD ["python", "-m", "app.main"]
+CMD ["python", "-m", "app.app.main"]
