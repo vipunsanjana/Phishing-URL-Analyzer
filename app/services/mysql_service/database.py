@@ -1,9 +1,9 @@
-from mysql.connector import Error
+
 from typing import Dict, Any, List, Optional
 from app.services.mysql_service.models import PhishingAnalysisResponse
 from app.utils import constants
 
-def execute_query(connection, query: str, values: Optional[tuple] = None, fetch: bool = False) -> Optional[List[tuple]]:
+async def execute_query(connection, query: str, values: Optional[tuple] = None, fetch: bool = False) -> Optional[List[tuple]]:
     """
     Execute a SQL query with optional values and fetch result if required.
 
@@ -16,20 +16,20 @@ def execute_query(connection, query: str, values: Optional[tuple] = None, fetch:
     Returns:
         List[tuple]: List of results if fetch is True, else None.
     Raises:
-        Error: If there is an error executing the query.
+        Exception: If there is an error executing the query.
     """
     try:
-        with connection.cursor() as cursor:
-            cursor.execute(query, values) if values else cursor.execute(query)
+        async with connection.cursor() as cursor:
+            await cursor.execute(query, values) if values else await cursor.execute(query)
             if fetch:
-                return cursor.fetchall()
-            connection.commit()
+                result = await cursor.fetchall()
+                return result
+            await connection.commit()
             constants.LOGGER.info("Query executed successfully.")
-    except Error as e:
-        connection.rollback()
+    except Exception as e:
+        await connection.rollback()
         constants.LOGGER.error(f"Database query error: {e}")
         raise Exception(f"Database query error: {e}")
-
 class PhishingQueries:
     INSERT_PHISHING = """
         INSERT INTO phishing_metadata 
@@ -40,8 +40,7 @@ class PhishingQueries:
     SELECT_ALL_URLS = "SELECT url FROM phishing_url_tracking"
     SELECT_PHISHING_CASES = "SELECT * FROM phishing_metadata"
 
-
-def save_only_phishing(connection, data: Dict[str, Any], url: str):
+async def save_only_phishing(connection, data: Dict[str, Any], url: str):
     """
     Save phishing analysis data into `phishing_metadata` if phishing=True.
 
@@ -78,30 +77,27 @@ def save_only_phishing(connection, data: Dict[str, Any], url: str):
         data.get("downloadable_screenshot_path")
     )
     
-    execute_query(connection, PhishingQueries.INSERT_PHISHING, values)
+    await execute_query(connection, PhishingQueries.INSERT_PHISHING, values)
 
-
-def delete_all_records(connection):
+async def delete_all_records(connection):
     """
     Delete all records from `all_analyses` and `phishing_cases` tables.
     """
-    execute_query(connection, PhishingQueries.DELETE_ALL_ANALYSES)
+    await execute_query(connection, PhishingQueries.DELETE_ALL_ANALYSES)
 
-
-def get_all_urls(connection) -> List[str]:
+async def get_all_urls(connection) -> List[str]:
     """
     Retrieve all URLs from the specified table.
 
     Returns:
         List[str]: A list of URLs from the database.
     """
-    rows = execute_query(connection, PhishingQueries.SELECT_ALL_URLS, fetch=True)
+    rows = await execute_query(connection, PhishingQueries.SELECT_ALL_URLS, fetch=True)
     urls = [row[0] for row in rows]
     constants.LOGGER.info(f"Fetched {len(urls)} URLs from the database.")
     return urls
 
-
-def get_report_from_phishing_sites(connection) -> Dict[str, Any]:
+async def get_report_from_phishing_sites(connection) -> Dict[str, Any]:
     """
     Generate a report based on data from phishing sites.
 
@@ -118,13 +114,13 @@ def get_report_from_phishing_sites(connection) -> Dict[str, Any]:
         "total_sites_scanned": 0
     }
 
-    records = execute_query(connection, PhishingQueries.SELECT_PHISHING_CASES, fetch=True)
+    records = await execute_query(connection, PhishingQueries.SELECT_PHISHING_CASES, fetch=True)
 
     for record in records:
         counters["total_sites_scanned"] += 1
 
-        political_content = str(record[2]).strip().lower()  # Correcting the index for 'is_political_content'
-        website_related_to_sri_lanka = str(record[1]).strip().lower()  # Correcting the index for 'is_related_lk'
+        political_content = str(record[2]).strip().lower()
+        website_related_to_sri_lanka = str(record[1]).strip().lower()
         phishing_status = str(record[5]).strip().lower()
 
         counters["not_political"] += 1 if political_content != "1" else 0
