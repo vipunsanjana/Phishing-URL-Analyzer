@@ -16,7 +16,7 @@ async def create_mysql_connection():
             user=config.MYSQL_DB_USER,
             password=config.MYSQL_DB_PASSWORD,
             db=config.MYSQL_DB_NAME,
-            port=config.MYSQL_DB_PORT,
+            port=int(config.MYSQL_DB_PORT),
         )
         if connection:
             constants.LOGGER.info("Connected to MySQL database")
