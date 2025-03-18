@@ -51,12 +51,18 @@ google_creds = {
 # Google Sheet ID
 SHEET_ID = os.getenv("SHEET_ID")
 
+
+private_key_firebase = os.getenv("FIREBASE_PRIVATE_KEY")
+if private_key_firebase:
+    private_key_firebase = private_key_firebase.replace(r"\n", "\n")  # This will replace the literal '\n' with actual newlines
+
+
 # Firebase Service Account Credentials
 FIREBASE_CREDENTIALS = {
     "type": os.getenv("FIREBASE_TYPE"),
     "project_id": os.getenv("FIREBASE_PROJECT_ID"),
     "private_key_id": os.getenv("FIREBASE_PRIVATE_KEY_ID"),
-    "private_key": os.getenv("FIREBASE_PRIVATE_KEY").replace(r"\n", "\n"), 
+    "private_key": private_key_firebase, 
     "client_email": os.getenv("FIREBASE_CLIENT_EMAIL"),
     "client_id": os.getenv("FIREBASE_CLIENT_ID"),
     "auth_uri": os.getenv("FIREBASE_AUTH_URI"),
