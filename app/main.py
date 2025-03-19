@@ -42,4 +42,4 @@ async def main():
             constants.LOGGER.debug("Database connection closed.")
 
 if __name__ == "__main__":
-    asyncio.run(main())  # ✅ Properly run the async main function
+    asyncio.run(main()) 
