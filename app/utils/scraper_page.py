@@ -72,10 +72,8 @@ async def scrape_website(url):
             if gpt_output.get("Phishing"):
                 return gpt_output
 
-            unique_filename = constants.generate_unique_filename(url)
-
             # Upload image
-            image_url = await upload_image(resized_screenshot_buffer, unique_filename)
+            image_url = await upload_image(resized_screenshot_buffer, constants.screenshot_path)
 
             return {
                 "gpt_response": gpt_output,

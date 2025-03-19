@@ -1,29 +1,6 @@
 import logging
 import time
 import uuid
-import hashlib
-
-def generate_unique_filename(url: str) -> str:
-    """
-    Generates a unique filename based on the URL, timestamp, and UUID.
-
-    Args:
-        url (str): The URL to be hashed for uniqueness.
-
-    Returns:
-        str: A unique filename in the format 'static/screenshot-{timestamp}-{unique_id}.png'.
-    """
-    # Hash the URL to ensure uniqueness
-    url_hash = str(hashlib.md5(url.encode()).hexdigest()[:8])  # Short hash for readability
-    
-    # Get the current timestamp in nanoseconds
-    timestamp = str(time.time_ns())
-    
-    # Generate a random UUID
-    unique_id = str(uuid.uuid4().hex)
-    
-    # Combine all parts into a unique filename
-    return f'static/screenshot-{url_hash}-{timestamp}-{unique_id}.png'
 
 logging.basicConfig(
     level=getattr(logging, "INFO", logging.INFO),
@@ -63,6 +40,11 @@ REPORT_TEMPLATE = """
 
 🔗 [View Google Sheet]({google_sheet_url})
 """
+
+# Generate a unique filename
+timestamp = str(time.time_ns())  # Nanoseconds precision for better uniqueness
+unique_id = str(uuid.uuid4().hex)  # Add a random UUID for extra uniqueness
+screenshot_path = f'static/screenshot-{timestamp}-{unique_id}.png'
 
 # Maximum token limit for OpenAI API
 max_token_limit = 127000 
