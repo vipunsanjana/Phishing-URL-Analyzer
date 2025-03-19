@@ -1,6 +1,7 @@
 from queue import Queue
 
-from app.utils import process_url
+from app.utils.process_url import process_url
+
 
 def worker(connection, queue: Queue):
     """Worker function to process URLs from the queue."""
