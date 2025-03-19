@@ -1,5 +1,6 @@
 import logging
 import time
+import uuid
 
 logging.basicConfig(
     level=getattr(logging, "INFO", logging.INFO),
@@ -40,8 +41,10 @@ REPORT_TEMPLATE = """
 🔗 [View Google Sheet]({google_sheet_url})
 """
 
-# Path to save the screenshot
-screenshot_path = 'static/screenshot-' + str(time.time()) + '.png'
+# Generate a unique filename
+timestamp = str(time.time_ns())  # Nanoseconds precision for better uniqueness
+unique_id = str(uuid.uuid4().hex)  # Add a random UUID for extra uniqueness
+screenshot_path = f'static/screenshot-{timestamp}-{unique_id}.png'
 
 # Maximum token limit for OpenAI API
 max_token_limit = 127000 
