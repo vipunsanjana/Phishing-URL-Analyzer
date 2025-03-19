@@ -1,4 +1,4 @@
-import asyncio
+
 from playwright.async_api import async_playwright, TimeoutError as PlaywrightTimeoutError
 from app.services.google_chat.send_message import send_error_message
 from app.utils import constants, image_context
@@ -72,8 +72,10 @@ async def scrape_website(url):
             if gpt_output.get("Phishing"):
                 return gpt_output
 
+            unique_filename = constants.generate_unique_filename(url)
+
             # Upload image
-            image_url = await upload_image(resized_screenshot_buffer, constants.screenshot_path)
+            image_url = await upload_image(resized_screenshot_buffer, unique_filename)
 
             return {
                 "gpt_response": gpt_output,

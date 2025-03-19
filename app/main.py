@@ -7,34 +7,35 @@ from app.services.mysql_service.database import (
     get_all_urls,
     get_report_from_phishing_sites,
 )
-from queue import Queue
 from app.utils.worker import worker
 
 async def main():
     connection = None
     try:
         connection = create_mysql_connection()
-        queue = Queue()
+        queue = asyncio.Queue()
 
-        # Retrieve URLs synchronously
-        urls = get_all_urls(connection)
+        # Retrieve URLs asynchronously (correctly awaiting)
+        urls = await asyncio.to_thread(get_all_urls, connection)  # ✅ Await here
         for url in urls:
-            queue.put(url)
+            await queue.put(url)
 
-        # Process URLs sequentially
-        await worker(connection, queue)
+        # Create worker tasks
+        num_workers = min(50, len(urls))  
+        tasks = [asyncio.create_task(worker(connection, queue)) for _ in range(num_workers)]
+        await asyncio.gather(*tasks)  
 
-        # Fetch and send phishing report
-        report = get_report_from_phishing_sites(connection)
-        send_webhook_message(report)
+        # Fetch and send phishing report asynchronously
+        report = await asyncio.to_thread(get_report_from_phishing_sites, connection)  # ✅ Await here
+        send_webhook_message(report) 
 
-        # Delete all records
-        delete_all_records(connection)
+        # Delete all records asynchronously
+        await asyncio.to_thread(delete_all_records, connection)  # ✅ Await here
 
         constants.LOGGER.info("Process completed successfully.")
     except Exception as e:
         constants.LOGGER.critical(f"Critical error in main function: {e}", exc_info=True)
-        send_error_message("Main Function", str(e))
+        send_error_message("Main Function", str(e))  # Ensure this is async
         raise Exception(f"Critical error in main function: {e}")
     finally:
         if connection and connection.is_connected():
@@ -42,4 +43,4 @@ async def main():
             constants.LOGGER.debug("Database connection closed.")
 
 if __name__ == "__main__":
-    asyncio.run(main())  # ✅ Properly run the async main function
+    asyncio.run(main())
