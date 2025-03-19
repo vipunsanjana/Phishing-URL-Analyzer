@@ -34,20 +34,31 @@ The system first runs a **KQL query** in **Azure Log Analytics** to fetch URLs a
 
 ## Project Structure
 ```
-app/
-├── services/
-│   ├── google_chat/
-│   │   ├── send_message.py    # Sends notifications to Google Chat
-│   ├── google_sheet/
-│   │   ├── sheet.py           # Handles Google Sheets integration
-│   ├── mysql_service/
-│   │   ├── datasaving.py      # Database interactions
-├── utils/
-│   ├── config.py              # Configuration settings
-│   ├── worker.py              # Worker function for async processing
-│   ├── scraper_page.py        # Web scraping logic
-│   ├── constants.py           # Global constants
-├── main.py                     # Entry point for execution
+soc-phishing-analyzer/
+├── app/
+│   ├── services/
+│   │   ├── firebase_service/   # Firebase storage and Firestore integration
+│   │   ├── google_chat/        # Sends notifications to Google Chat
+│   │   ├── google_sheet/       # Handles Google Sheets integration
+│   │   ├── mysql_service/      # Database interactions
+│   │   ├── openai_service/     # OpenAI and LangChain integration
+│   ├── utils/
+│   │   ├── config.py           # Configuration settings
+│   │   ├── constants.py        # Global constants
+│   │   ├── worker.py           # Worker function for async processing
+│   │   ├── scraper_page.py     # Web scraping logic
+│   │   ├── html_context.py     # HTML content processing
+│   │   ├── image_context.py    # Image processing utilities
+│   │   ├── prompt_template.py  # LangChain prompt templates
+│   ├── main.py                 # Entry point for execution
+│
+├── venv/                       # Python virtual environment
+├── .dockerignore               # Docker ignore file
+├── .gitignore                  # Git ignore file
+├── .env                        # Environment variables
+├── Dockerfile                  # Docker configuration
+├── requirements.txt            # Python dependencies
+├── README.md                   # Project documentation
 ```
 
 ## Workflow
@@ -71,7 +82,7 @@ app/
 1. Clone the repository:
    ```sh
    git clone <repository-url>
-   cd <project-folder>
+   cd soc-phishing-analyzer
    ```
 2. Set up Python virtual environment:
    ```sh
@@ -90,10 +101,8 @@ app/
    ```
 
 ## Environment Variables
-Ensure the following environment variables are set:
-```sh
-  add env variables
-```
+Ensure the environment variables are set in the `.env` file:
+
 
 ## Contributing
 1. Fork the repository.
@@ -106,165 +115,5 @@ Ensure the following environment variables are set:
 MIT License
 
 ## Contact
-For any issues or questions, contact **[Your Name]** at **your.email@example.com**.
-
-# 🌈 **Automated URL Scraping and Analysis Workflow**
-
-Automate your URL scraping, content analysis, and security monitoring with a seamless, end-to-end solution. This workflow captures unique URLs from **Choreo Webapps logs**, processes them through a web scraping API, generates insightful analyses with **OpenAI** using **LangChain**, and sends responses.
-
----
-
-## 📊 **Workflow Overview**
-
-This automation consists of **primary trigger**:
-
-1. **URL Analysis Automation**
-
----
-
-## 🖍️ **Step-by-Step Process**
-
-### 🔍 **1. URL Analysis Automation**
-
-1. **Trigger Web Scraping API**
-
-   - Processes each URL through the **web scraping API**.
-
-2. **Web Scraper Endpoint**
-
-   - Hosted on an **Azure VM**, the scraper extracts:
-     - ✅ **Text Content**
-     - ✅ **HTML Content**
-     - ✅ **Screenshots** of the webpage
-   - **Screenshots are stored** in **Firebase Image Storage**.
-
-3. **Generate Analysis with OpenAI and LangChain**
-
-   - Processes the extracted content using **OpenAI** and **LangChain** to generate concise summaries for each URL.
-
----
-
-## 📂 **Folder Structure**
-
-```
-.
-├── app/
-│   ├── main.py                  # Entry point for the FastAPI application
-│   ├── utils/                   # Utility functions and constants
-│   │   ├── constants.py         # Constants and configurations
-│   │   ├── scraper_page.py      # Web scraping logic
-│   │   ├── html_context.py      # HTML content processing
-│   │   ├── image_context.py     # Image processing utilities
-│   │   ├── prompt_template.py   # LangChain prompt templates
-│   ├── services/                # External service integrations
-│   │   ├── firebase_service/    # Firebase storage and Firestore integration
-│   │   ├── openai_service/      # OpenAI and LangChain integration
-│
-├── requirements.txt             # Python dependencies
-├── .env                         # Environment variables
-├── Dockerfile                   # Docker configuration
-├── .dockerignore                # Docker ignore file
-├── openapi.yaml                 # OpenAPI specification
-└── README.md                    # Project documentation
-```
-
----
-
-## ⚙️ **Setup and Installation**
-
-### 🛠️ **1. Install Dependencies**
-
-```bash
-pip install -r requirements.txt
-```
-
-### 🔒 **2. Set Up Environment Variables**
-
-Create a `.env` file in the project root with these variables:
-
-```env
-FIREBASE_CREDENTIALS=path/to/serviceAccountKey.json
-OPENAI_API_KEY=your_openai_api_key
-BUCKET_NAME=your_firebase_bucket_name
-COLLECTION_NAME=your_firestore_collection_name
-```
-
-### 🚀 **3. Run Automation Scripts**
-
-1. **URL Analysis Automation**:
-   ```bash
-   uvicorn app.main:app --reload
-   ```
-
----
-
-## 🌐 **Endpoints**
-
-### **Web Scraper API**
-
-- **URL**: `http://localhost:8003/status`
-
-- **Method**: `GET`
-
-- **Response Example**:
-
-  ```json
-  {
-    "status": "running"
-  }
-  ```
-
-- **URL**: `http://localhost:8000/scrape`
-
-- **Method**: `POST`
-
-- **Payload Example**:
-
-  ```json
-  {
-    "url": "https://example.com"
-  }
-  ```
-
----
-
-## 📦 **Dependencies**
-
-### `requirements.txt`
-
-```txt
-fastapi
-uvicorn
-pydantic
-playwright
-beautifulsoup4
-pillow
-python-dotenv
-requests
-firebase-admin
-lxml
-openai
-langchain
-langchain-openai
-PyYAML
-```
-
----
-
-## 🚀 **Future Improvements**
-
-🌟 **Enhance Your Automation**:
-
-- **Error Handling**: Add robust error handling for failed web scraping tasks.
-- **Retry Logic**: Implement retries for failed API calls.
-- **Logging**: Improve logging to enhance traceability and debugging.
-- **Dynamic Prompt Templates**: Allow dynamic customization of LangChain prompts based on input data.
-- **Scalability**: Optimize the workflow for handling large volumes of URLs.
-
----
-
-## 📧 **Contact**
-
-For support or inquiries, please reach out to the **SOC Team - WSO2 LLC**.\
-**Developed by Vipun Sanjana**
-
+For any issues or questions, contact **SOC Team - WSO2 LLC**.
+**Developed by Vipun Sanjana**.
