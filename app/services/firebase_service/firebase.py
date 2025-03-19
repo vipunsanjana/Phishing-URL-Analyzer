@@ -1,5 +1,5 @@
 import firebase_admin
-from firebase_admin import credentials, firestore, storage, initialize_app
+from firebase_admin import credentials, storage, initialize_app
 from google.api_core.exceptions import GoogleAPIError
 from app.utils import constants, config
 import asyncio
