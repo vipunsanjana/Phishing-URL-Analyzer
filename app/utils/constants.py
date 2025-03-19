@@ -47,7 +47,7 @@ unique_id = str(uuid.uuid4().hex)  # Add a random UUID for extra uniqueness
 screenshot_path = f'static/screenshot-{timestamp}-{unique_id}.png'
 
 # Maximum token limit for OpenAI API
-max_token_limit = 127000 
+max_token_limit = 127500
 
 # web page content types
 VALID_CONTENT_TYPES = {
