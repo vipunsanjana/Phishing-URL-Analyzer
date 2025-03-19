@@ -3,7 +3,7 @@ from mysql.connector import Error
 from app.utils import constants, config
 import time
 
-def create_mysql_connection(retries=5, delay=5):
+def create_mysql_connection(retries=5, delay=2):
     """
     Establish and return a synchronous connection to the MySQL database with retries.
 
@@ -31,7 +31,7 @@ def create_mysql_connection(retries=5, delay=5):
                 constants.LOGGER.info("Connected to MySQL database")
                 return connection  
         except Error as e:
-            constants.LOGGER.error(f"❌ Connection attempt {attempt+1} failed: {e}")
+            constants.LOGGER.error(f"Connection attempt {attempt+1} failed: {e}")
             attempt += 1
             time.sleep(delay)  
 
