@@ -5,7 +5,7 @@ from app.utils import constants
 from app.utils.scraper_page import scrape_website
 import time
 
-def process_url(connection, url: str, retries: int = 1, delay: int = 2):
+async def process_url(connection, url: str, retries: int = 1, delay: int = 2):
     """
     Process a single URL by scraping, analyzing, and saving phishing data with retry logic.
     
@@ -20,15 +20,14 @@ def process_url(connection, url: str, retries: int = 1, delay: int = 2):
     """
     try:
         constants.LOGGER.info(f"Processing URL: {url}")
-        result = scrape_website(url)  # Synchronous scraping
+        result = await scrape_website(url)  # Synchronous scraping
 
-        if not result.get("Phishing"):
+        if not result["gpt_response"]["Phishing"]:
             save_only_phishing(connection, result, url)
             add_data_to_sheet(url, result)
     except Exception as e:
         if retries > 0:
             constants.LOGGER.warning(f"Retrying URL {url} due to error: {e}")
-            time.sleep(delay)  # Adding a delay between retries
             process_url(connection, url, retries - 1, delay)  # Retry with reduced retries
         else:
             constants.LOGGER.error(f"Error processing URL {url}: {e}", exc_info=True)
