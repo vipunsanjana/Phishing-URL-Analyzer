@@ -111,9 +111,6 @@ Ensure the environment variables are set in the `.env` file:
 4. Push to branch: `git push origin feature-name`.
 5. Open a Pull Request.
 
-## License
-MIT License
-
 ## Contact
 For any issues or questions, contact **SOC Team - WSO2 LLC**.
 **Developed by Vipun Sanjana**.

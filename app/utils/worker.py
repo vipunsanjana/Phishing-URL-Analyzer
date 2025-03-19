@@ -6,5 +6,6 @@ async def worker(connection, queue: asyncio.Queue):
     while not queue.empty():
         url = await queue.get()
         await process_url(connection, url)
+        await asyncio.sleep(2)
         queue.task_done()
         
