@@ -1,12 +1,14 @@
 from app.services.google_chat.send_message import send_webhook_message, send_error_message
 from app.services.mysql_service.connection import create_mysql_connection
-from app.utils import constants, worker
+from app.utils import constants
 from app.services.mysql_service.database import (
     delete_all_records,
     get_all_urls,
     get_report_from_phishing_sites,
 )
 from queue import Queue
+
+from app.utils.worker import worker
 
 def main():
     connection = None
