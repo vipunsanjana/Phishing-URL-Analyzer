@@ -112,5 +112,4 @@ Ensure the environment variables are set in the `.env` file:
 5. Open a Pull Request.
 
 ## Contact
-For any issues or questions, contact **SOC Team - WSO2 LLC**.
 **Developed by Vipun Sanjana**.
